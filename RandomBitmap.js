@@ -21,14 +21,40 @@ for (let i = 0; i < WIDTH; i++) {
 function requestRandom(row) {
   const res = req(
     'GET',
-    `https://www.random.org/integers/?num=${HEIGHT}&min=0&max=2097152&col=1&base=16&format=plain&rnd=new`,
+    `https://www.random.org/integers/?num=${HEIGHT}&min=0&max=2097152&col=1&base=10&format=plain&rnd=new`,
     {
       retry: true,
       maxRetries: 5
     }
   );
 
-  rowsToGenerate[row] = res.getBody('utf8').split('\n').slice(0,-1);
+  const newRow = [];
+  res.getBody('utf8').split('\n').slice(0,-1).forEach(num => {
+    newRow.push(parseInt(num.toString(16), 16));
+  });
+  rowsToGenerate[row] = newRow;
+
+  countFinished++;
+  if (countFinished === WIDTH) {
+    drawBitmap();
+  }
+}
+
+// This function was used for testing because I ran over my alloted quota (oops)
+// Taken from the MDN page on Math.random()
+function getRandomInt(row) {
+  min = Math.ceil(0);
+  max = Math.floor(2097152);
+
+
+  const newRow = []
+  let base10;
+  for (let i = 0; i < HEIGHT; i++) {
+    base10 = Math.floor(Math.random() * (max - min)) + min;
+    newRow.push(parseInt(base10.toString(16), 16));
+  }
+
+  rowsToGenerate[row] = newRow;
 
   countFinished++;
   if (countFinished === WIDTH) {
@@ -37,11 +63,7 @@ function requestRandom(row) {
 }
 
 function drawBitmap() {
-  for (let i = 0; i < WIDTH; i++) {
-    for (let j = 0; j < HEIGHT; j++) {
-      rowsToGenerate[i][j] = hexRgb(rowsToGenerate[i][j]);
-    }
-  }
+
 
   const bitmapArray = [].concat.apply([], rowsToGenerate);
 
@@ -50,10 +72,8 @@ function drawBitmap() {
       throw err;
     }
 
-    bitmapArray.forEach((row, i) => {
-      row.forEach((color, j) => {
-        image.setPixelColor(color, j, i);
-      });
+    bitmapArray.forEach((color, index) => {
+      image.setPixelColor(color, index % HEIGHT, index / HEIGHT);
     });
 
     image.write('output.png', (err) => {
