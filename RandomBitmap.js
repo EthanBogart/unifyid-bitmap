@@ -21,7 +21,7 @@ for (let i = 0; i < WIDTH; i++) {
 function requestRandom(row) {
   const res = req(
     'GET',
-    `https://www.random.org/integers/?num=${HEIGHT}&min=0&max=2097152&col=1&base=10&format=plain&rnd=new`,
+    `https://www.random.org/integers/?num=${HEIGHT}&min=0&max=4294967295&col=1&base=10&format=plain&rnd=new`,
     {
       retry: true,
       maxRetries: 5
@@ -44,7 +44,7 @@ function requestRandom(row) {
 // Taken from the MDN page on Math.random()
 function getRandomInt(row) {
   min = Math.ceil(0);
-  max = Math.floor(2097152);
+  max = Math.floor(4294967295);
 
 
   const newRow = []
