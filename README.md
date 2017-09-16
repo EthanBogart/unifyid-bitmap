@@ -5,3 +5,6 @@ This application is intended to create a random bitmap from the Random.org api. 
 
 ## To run
 To run this program, just use `npm install` or `yarn install` and then run `node RandomBitmap.js` inside the project root.
+
+## Output
+The program creates a .png image called `output.png` in the root of the project.
